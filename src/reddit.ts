@@ -3,7 +3,7 @@ import Snoowrap, { Submission } from 'snoowrap';
 // A list of strings that represents the id's of submissions that have already been scraped.
 let alreadyFound: string[] = [];
 
-const timeout = 1 * 60;
+const timeout = 60;
 
 export async function checkSubreddit(app: Snoowrap): Promise<Submission[]> {
     let now = Math.floor(new Date().getTime() / 1000);

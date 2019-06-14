@@ -10,7 +10,7 @@ export async function postSubmission(client: Client, submission: Submission) {
         return;
     }
 
-    await channel.send(createEmbeddedMessage(submission));
+    await channel.send(await createEmbeddedMessage(submission));
     notifyUsers(channel, submission);
 }
 

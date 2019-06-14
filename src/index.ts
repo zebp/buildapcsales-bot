@@ -26,7 +26,7 @@ async function start() {
     let posts = await checkSubreddit(reddit);
     posts.forEach(post => postSubmission(discord, post));
 
-    setTimeout(start, 60);
+    setTimeout(start, 5000);
 }
 
 start();
