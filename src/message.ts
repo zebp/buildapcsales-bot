@@ -1,6 +1,5 @@
 import { RichEmbed } from "discord.js";
-import { Submission, RedditUser } from "snoowrap";
-import axios from "axios";
+import { Submission } from "snoowrap";
 
 const regexes = [
     /\s\$(\d+\.\d{2}?)\s/m,
@@ -12,7 +11,7 @@ const regexes = [
 const defaultAvatar = "https://styles.redditmedia.com/t5_2s3dh/styles/communityIcon_bf4ya2rtdaz01.png";
 
 export async function createEmbeddedMessage(submission: Submission): Promise<RichEmbed> {
-    let avatar = await provideAvatar(submission.author);
+    let avatar = await submission.author.icon_img;
 
     return new RichEmbed()
         .setTitle(submission.title)
@@ -20,7 +19,8 @@ export async function createEmbeddedMessage(submission: Submission): Promise<Ric
         .setURL("https://reddit.com" + submission.permalink)
         .setAuthor(`u/${ submission.author.name } posted`, avatar, "https://reddit.com" + submission.permalink)
         .setDescription('A new post has appeared on [r/buildapcsales](https://www.reddit.com/r/buildapcsales/new/).')
-        .addField("Price", findPrice(submission.title))
+        .addField("Category", submission.link_flair_text, true)
+        .addField("Price", findPrice(submission.title), true)
         .setTimestamp()
         .setFooter('r/buildapcsales', defaultAvatar);
 }
@@ -35,14 +35,4 @@ export function findPrice(title: string): string {
     }
     
     return "Unable to parse price";
-}
-
-export async function provideAvatar(author: RedditUser): Promise<string> {
-    let body: any = await axios.get(`https://www.reddit.com/user/${ author.name }/about.json`);
-
-    if (!author.icon_img) {
-        return defaultAvatar;
-    }
-
-    return body.icon_img;
 }

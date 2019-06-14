@@ -15,6 +15,10 @@ export async function postSubmission(client: Client, submission: Submission) {
 }
 
 function findChannel(guild: Guild, submission: Submission): GuildChannel | undefined {
+    if (!submission.link_flair_text) {
+        return undefined;
+    }
+
     let flair = submission.link_flair_text!.toLowerCase();
 
     return guild.channels
