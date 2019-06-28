@@ -1,29 +1,14 @@
-import { Client, Snowflake, Guild, GuildChannel, TextChannel, Message, Channel, Role } from "discord.js";
+import { Client, Snowflake, Guild, TextChannel, Message, Role } from "discord.js";
 import { Submission } from "snoowrap";
 import { createEmbeddedMessage} from "./message";
+import { findChannel } from "./channels";
 
 export async function postSubmission(client: Client, submission: Submission) {
     let guild: Guild = client.guilds.get(process.env.SERVER_ID as Snowflake)!;
     let channel: TextChannel = findChannel(guild, submission)! as TextChannel;
 
-    if (!channel) {
-        return;
-    }
-
     await channel.send(await createEmbeddedMessage(submission));
     notifyUsers(channel, submission);
-}
-
-function findChannel(guild: Guild, submission: Submission): GuildChannel | undefined {
-    if (!submission.link_flair_text) {
-        return undefined;
-    }
-
-    let flair = submission.link_flair_text!.toLowerCase();
-
-    return guild.channels
-        .filter(channel => channel.name === flair)
-        .map(channel => guild.channels.get(channel.id))[0];
 }
 
 async function notifyUsers(channel: TextChannel, submission: Submission) {

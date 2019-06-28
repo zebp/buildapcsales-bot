@@ -2,6 +2,7 @@ import { RichEmbed } from "discord.js";
 import { Submission } from "snoowrap";
 
 const regexes = [
+    /\$((?:\d|\,)*\.?\d+)/m,
     /\s\$(\d+\.\d{2}?)\s/m,
     /\s(\d+\.\d{2}?)\s/m,
     /[\s=]\$(\d+[\.\d{2}]?)\s/m,

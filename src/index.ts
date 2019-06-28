@@ -23,8 +23,10 @@ const discord = new Client();
 discord.login(DISCORD_TOKEN);
 
 async function start() {
-    let posts = await checkSubreddit(reddit);
-    posts.forEach(post => postSubmission(discord, post));
+    try {
+        let posts = await checkSubreddit(reddit);
+        posts.forEach(post => postSubmission(discord, post));
+    } catch (error) {}
 
     setTimeout(start, 5000);
 }
