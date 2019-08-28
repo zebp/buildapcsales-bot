@@ -1,13 +1,17 @@
 import { Client, Snowflake, Guild, TextChannel, Message, Role } from "discord.js";
 import { Submission } from "snoowrap";
 import { createEmbeddedMessage} from "./message";
-import { findChannel } from "./channels";
+import { findChannel, findTypeFromSubmission } from "./channels";
 
-export async function postSubmission(client: Client, submission: Submission) {
+export async function postSubmission(client: Client, submission: Submission, subReddit: string, region: string) {
     let guild: Guild = client.guilds.get(process.env.SERVER_ID as Snowflake)!;
-    let channel: TextChannel = findChannel(guild, submission)! as TextChannel;
+    let channel: TextChannel = findChannel(guild, submission, region)! as TextChannel;
 
-    await channel.send(await createEmbeddedMessage(submission));
+    if (!channel) {
+        return;
+    }
+
+    await channel.send(await createEmbeddedMessage(submission, subReddit));
     notifyUsers(channel, submission);
 }
 
@@ -22,10 +26,10 @@ async function notifyUsers(channel: TextChannel, submission: Submission) {
     }
 }
 
-function findRole(channel: TextChannel, submission: Submission): Role | undefined{
-    let flair = submission.link_flair_text!.toLowerCase();
+function findRole(channel: TextChannel, submission: Submission): Role | undefined {
+    const type = findTypeFromSubmission(submission)!.toLowerCase();
 
     return channel.guild.roles
-        .filter(role => role.name === flair)
+        .filter(role => role.name === type)
         .map(role => channel.guild.roles.get(role.id))[0];
 }
