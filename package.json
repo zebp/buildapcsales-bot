@@ -1,24 +1,19 @@
 {
   "name": "buildapcsales-bot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "A bot to notify users on Discord about new posts to r/buildapcsales.",
+  "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vlakreeh/buildapcsales-bot.git"
+  },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "discord.js": "^11.5.1",
-    "dotenv": "^8.0.0",
-    "snoowrap": "^1.16.0"
+  "bugs": {
+    "url": "https://github.com/vlakreeh/buildapcsales-bot/issues"
   },
-  "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/dotenv": "^6.1.1",
-    "@types/snoowrap": "^1.15.3",
-    "axios": "^0.19.0",
-    "ts-node": "^8.2.0",
-    "typescript": "^3.5.1"
-  }
+  "homepage": "https://github.com/vlakreeh/buildapcsales-bot#readme"
 }
