@@ -1,5 +1,6 @@
 import { Client, MessageReaction, User, Message } from "discord.js";
 import { Submission } from "../reddit";
+import createDiscordChannels from "./setup";
 
 export default class DiscordBot {
 
@@ -22,9 +23,10 @@ export default class DiscordBot {
 
     }
 
-    onMessage(message: Message) {
+    async onMessage(message: Message) {
         if (message.content === "!setup") { // TODO: Setup permissions for initial bot setup.
             // TODO: Set up channels and stuff.
+            await createDiscordChannels(this.client, message.guild);
         }
     }
 
