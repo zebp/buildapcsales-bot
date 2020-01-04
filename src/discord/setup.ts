@@ -48,17 +48,19 @@ async function createCategoryChannel(category: Category, guild: Guild, channelCa
 
 async function createRoles(guild: Guild) {
     for (const category of CATEGORIES) {
-        const role = getRoleByName(category, guild);
+        let role = getRoleByName(category, guild);
 
         if (role) {
             continue;
         }
 
-        await guild.createRole({
+        role = await guild.createRole({
             name: category,
             color: "#36b6e0",
             mentionable: true,
         });
+
+        role.setMentionable(false);
     }
 }
 
