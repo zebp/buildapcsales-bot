@@ -8,8 +8,8 @@ export type Thing<T> = {
 
 export type Listing<T> = {
     modhash: string,
-    before: string | undefined,
-    after: string | undefined,
+    before?: string,
+    after?: string,
     children: T[]
 }
 
@@ -17,8 +17,8 @@ export type Submission = {
     id: string,
     title: String,
     url: Url,
-    link_flair_text: string | undefined,
-    thumbnail: Url | string,
+    link_flair_text?: string,
+    thumbnail?: Url,
 }
 
 /**
