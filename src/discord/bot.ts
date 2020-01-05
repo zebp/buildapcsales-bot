@@ -1,6 +1,7 @@
-import { Client, MessageReaction, User, Message } from "discord.js";
+import { Client, MessageReaction, User, Message, RichEmbed } from "discord.js";
 import { Submission } from "../reddit";
 import createDiscordChannels from "./setup";
+import { getRoleByName } from "./role";
 
 export default class DiscordBot {
 
@@ -27,6 +28,32 @@ export default class DiscordBot {
         if (message.content === "!setup") { // TODO: Setup permissions for initial bot setup.
             // TODO: Set up channels and stuff.
             await createDiscordChannels(this.client, message.guild);
+        } else if (message.content.startsWith("!subscribe ")) {
+            await message.delete();
+
+            const matches = message.content.match(/\!subscribe\s(.+)/);
+            const argument = matches![1];
+
+            const role = getRoleByName(argument, message.guild);
+
+            if (!role || role.hasPermission("ADMINISTRATOR", false, true)) {
+                const embed = new RichEmbed()
+                    .setTitle("Invalid Category")
+                    .setDescription("We cannot subscribe you to that invalid category.")
+                    .setColor("#36b6e0")
+                    .setTimestamp();
+
+                await message.author.sendEmbed(embed);
+                return;
+            }
+
+            const member = await message.guild.fetchMember(message.author);
+
+            if (member.roles.find(memberRole => memberRole.id === role.id)) {
+                await member.removeRole(role);
+            } else {
+                await member.addRole(role);
+            }
         }
     }
 
