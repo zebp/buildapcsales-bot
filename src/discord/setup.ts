@@ -1,23 +1,6 @@
 import { Client, Guild, TextChannel, RichEmbed, Message, Role, CategoryChannel } from "discord.js";
 import { getRoleByName } from "./role";
-
-// TODO: Clean this up later
-enum Category {
-    Cpu = "Cpu",
-    Gpu = "Gpu",
-    Psu = "Psu",
-    Ram = "Ram",
-    Hdd = "Hdd",
-    Ssd = "Ssd",
-    Cooler = "Cooler"
-}
-
-const CATEGORIES = [
-    Category.Cpu, Category.Gpu,
-    Category.Psu, Category.Ram,
-    Category.Hdd, Category.Ssd,
-    Category.Cooler,
-];
+import { Category, CATEGORIES } from "../categories";
 
 export default async function setupDiscordChannels(client: Client, guild: Guild) {
     await createRoles(guild);
