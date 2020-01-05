@@ -15,11 +15,16 @@ export type Listing<T> = {
 
 export type Submission = {
     id: string,
-    title: String,
-    url: Url,
+    title: string,
+    author: string,
+    permalink: string,
+    url: string,
     link_flair_text?: string,
-    thumbnail?: Url,
+    created_utc: number,
+    thumbnail?: string,
 }
+
+const TIMEOUT = 60 * 60;
 
 /**
  * Fetches the latests posts to the provided subreddit.
@@ -28,9 +33,13 @@ export type Submission = {
  */
 export async function getLatestSubmissions(subreddit: String, visited: Set<string>): Promise<Submission[]> {
     const response = await Axios.get(`https://reddit.com/r/${subreddit}/new.json`);
-    const listing: Listing<Submission> = response.data.data;
+    const listing: Listing<Thing<Submission>> = response.data.data;
+
+    const now = Date.now() / 1000;
 
     return listing
         .children
+        .map(submission => submission.data)
+        .filter(submission => (now - submission.created_utc) <= TIMEOUT)
         .filter(submission => !visited.has(submission.id));
 }

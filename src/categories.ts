@@ -1,3 +1,5 @@
+import { Submission } from "./reddit";
+
 export enum Category {
     Case = "Case",
     Controller = "Controller",
@@ -34,17 +36,25 @@ const CATEGORY_MAPPINGS: Map<String, Category> = new Map([
     ["nvme", Category.Ssd],
 ]);
 
-export function getCategoryForTitle(title: string): Category {
+export function getCategoryForTitle(submission: Submission): Category {
+    const { title } = submission;
     const matches = title.match(/\[(.+)\].+/);
 
     // Sometimes people don't provide the category of a product, so we will default to the "other" category.
     if (matches === null || matches.length != 2) {
-        return Category.Other;
+        if (submission.link_flair_text) {
+            return getCategoryByName(submission.link_flair_text);
+        } else {
+            return Category.Other;
+        }
     }
 
     const text = matches[1].toLowerCase();
+    return getCategoryByName(text);
+}
 
-    return CATEGORIES.find(category => category.toLowerCase() === text)
-        || CATEGORY_MAPPINGS.get(text)
+export function getCategoryByName(name: string): Category {
+    return CATEGORIES.find(category => category.toLowerCase() === name.toLowerCase())
+        || CATEGORY_MAPPINGS.get(name.toLowerCase())
         || Category.Other;
 }
