@@ -14,7 +14,15 @@ async function main() {
     await client.login(DISCORD_TOKEN);
 
     while (true) {
-        const submissions = await getLatestSubmissions("buildapcsales", visitedSubmissionSet); // TODO: Allow for a way to specify the subreddit.
+        let submissions;
+
+        try { // Reddit sometimes goes down for 5 or so minutes, so we need to error handle here.
+            submissions = await getLatestSubmissions("buildapcsales", visitedSubmissionSet); // TODO: Allow for a way to specify the subreddit.
+        } catch (_) {}
+
+        if (!submissions) {
+            continue;
+        }
 
         for (const submission of submissions) {
             await bot.sendSubmissionAlert(submission);
