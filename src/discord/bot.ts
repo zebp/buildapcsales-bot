@@ -2,7 +2,7 @@ import { Client, MessageReaction, User, Message, RichEmbed, TextChannel } from "
 import { Submission } from "../reddit";
 import createDiscordChannels from "./setup";
 import { getRoleByName } from "./role";
-import { getCategoryForTitle } from "../categories";
+import { getCategoryForTitle, CATEGORIES } from "../categories";
 import { createEmbeddedMessage } from "./message";
 
 export default class DiscordBot {
@@ -27,8 +27,18 @@ export default class DiscordBot {
         } else if (message.content.startsWith("!subscribe ")) {
             await message.delete();
 
+            const member = await message.guild.fetchMember(message.author);
             const matches = message.content.match(/\!subscribe\s(.+)/);
             const argument = matches![1];
+
+            if (argument.toLowerCase() === "all") {
+                for (let category of CATEGORIES) {
+                    const role = getRoleByName(category, message.guild)!;
+                    await member.addRole(role);
+                }
+
+                return;
+            }
 
             const role = getRoleByName(argument, message.guild);
 
@@ -42,8 +52,6 @@ export default class DiscordBot {
                 await message.author.send(embed);
                 return;
             }
-
-            const member = await message.guild.fetchMember(message.author);
 
             if (member.roles.find(memberRole => memberRole.id === role.id)) {
                 await member.removeRole(role);
@@ -69,8 +77,14 @@ export default class DiscordBot {
             
         const message = createEmbeddedMessage(submission);
 
-        const [_, mention] = await Promise.all([channel.send(message), channel.send(`<@&${role.id}>`)]);
-        await (mention as Message).delete();
+        const mention = (await Promise.all([
+            role.setMentionable(true),
+            channel.send(message),
+            channel.send(`<@&${role.id}>`),
+            role.setMentionable(false)
+        ]))[2] as Message;
+
+        await mention.delete();
     }
 
 }
