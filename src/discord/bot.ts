@@ -62,12 +62,15 @@ export default class DiscordBot {
     async sendSubmissionAlert(submission: Submission) {
         const guild = this.client.guilds.get(process.env.GUILD_ID as string)!;
         const category = getCategoryForTitle(submission);
+        const role = getRoleByName(category, guild)!;
 
         const channel = guild.channels
             .find(c => c.name === category.toLowerCase()) as TextChannel;
-
+            
         const message = createEmbeddedMessage(submission);
-        await channel.send(message);
+
+        const [_, mention] = await Promise.all([channel.send(message), channel.send(`<@&${role.id}>`)]);
+        await (mention as Message).delete();
     }
 
 }
