@@ -73,8 +73,13 @@ export default class DiscordBot {
         const role = getRoleByName(category, guild)!;
 
         const channel = guild.channels
-            .find(c => c.name === category.toLowerCase()) as TextChannel;
-            
+        .find(c => c.name === category.toLowerCase()) as TextChannel;
+        
+        // Don't bother sending the message if the server doesn't have that category.
+        if (!role) {
+            return;
+        }
+        
         const message = createEmbeddedMessage(submission);
 
         const mention = (await Promise.all([
