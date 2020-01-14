@@ -15,6 +15,12 @@ export default class DiscordBot {
     }
 
     async onMessage(message: Message) {
+        const channel = message.channel as TextChannel;
+
+        if (channel.name === "roles") {
+            await message.delete();
+        }
+
         if (message.content === "!setup") { // TODO: Setup permissions for initial bot setup.
             const member = await message.guild.fetchMember(message.author);
 
@@ -25,8 +31,6 @@ export default class DiscordBot {
             // TODO: Set up channels and stuff.
             await createDiscordChannels(this.client, message.guild);
         } else if (message.content.startsWith("!subscribe ")) {
-            await message.delete();
-
             const member = await message.guild.fetchMember(message.author);
             const matches = message.content.match(/\!subscribe\s(.+)/);
             const argument = matches![1];
@@ -79,7 +83,7 @@ export default class DiscordBot {
         if (!role) {
             return;
         }
-        
+
         const message = createEmbeddedMessage(submission);
 
         const mention = (await Promise.all([
