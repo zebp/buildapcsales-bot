@@ -2,7 +2,7 @@ import { Client, MessageReaction, User, Message, RichEmbed, TextChannel } from "
 import { Submission } from "../reddit";
 import createDiscordChannels from "./setup";
 import { getRoleByName } from "./role";
-import { getCategoryForTitle, CATEGORIES } from "../categories";
+import { getCategoryForSubmission, CATEGORIES } from "../categories";
 import { createEmbeddedMessage } from "./message";
 
 export default class DiscordBot {
@@ -69,7 +69,7 @@ export default class DiscordBot {
      */
     async sendSubmissionAlert(submission: Submission) {
         const guild = this.client.guilds.get(process.env.GUILD_ID as string)!;
-        const category = getCategoryForTitle(submission);
+        const category = getCategoryForSubmission(submission);
         const role = getRoleByName(category, guild)!;
 
         const channel = guild.channels

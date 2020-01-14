@@ -36,7 +36,11 @@ const CATEGORY_MAPPINGS: Map<String, Category> = new Map([
     ["nvme", Category.Ssd],
 ]);
 
-export function getCategoryForTitle(submission: Submission): Category {
+export function getCategoryForSubmission(submission: Submission): Category {
+    if (submission.link_flair_text) {
+        return getCategoryByName(submission.link_flair_text);
+    }
+
     const { title } = submission;
     const matches = title.match(/\[(.+)\].+/);
 
