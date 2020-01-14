@@ -3,14 +3,14 @@ import { getRoleByName } from "./role";
 import { Category, CATEGORIES } from "../categories";
 
 export default async function setupDiscordChannels(client: Client, guild: Guild) {
-    await createRoles(guild);
+    // await createRoles(guild);
     await createRoleChannel(client, guild);
 
-    const channelCategory = await guild.createChannel("Notifications", { type: "category" }) as CategoryChannel;
+    // const channelCategory = await guild.createChannel("Notifications", { type: "category" }) as CategoryChannel;
 
-    for (const category of CATEGORIES) {
-        await createCategoryChannel(category, guild, channelCategory);
-    }
+    // for (const category of CATEGORIES) {
+        // await createCategoryChannel(category, guild, channelCategory);
+    // }
 }
 
 async function createCategoryChannel(category: Category, guild: Guild, channelCategory: CategoryChannel) {
@@ -18,14 +18,16 @@ async function createCategoryChannel(category: Category, guild: Guild, channelCa
         return;
     }
 
+    const role = getRoleByName(category, guild)!;
+
     const channel = await guild.createChannel(category, {
         type: "text",
         parent: channelCategory
     }) as TextChannel;
 
     await Promise.all([
-        channel.overwritePermissions(guild.defaultRole, {  VIEW_CHANNEL: false }),
-        channel.overwritePermissions(getRoleByName(category, guild)!, {  VIEW_CHANNEL: true }),
+        channel.overwritePermissions(role, { SEND_MESSAGES: false, VIEW_CHANNEL: true }),
+        channel.overwritePermissions(guild.defaultRole, { SEND_MESSAGES: false, VIEW_CHANNEL: false }),
     ]);
 }
 

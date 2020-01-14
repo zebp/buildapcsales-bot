@@ -17,17 +17,13 @@ export default class DiscordBot {
     async onMessage(message: Message) {
         const channel = message.channel as TextChannel;
 
-        if (channel.name === "roles") {
-            await message.delete();
-        }
-
         if (message.content === "!setup") { // TODO: Setup permissions for initial bot setup.
             const member = await message.guild.fetchMember(message.author);
 
             if (!member.hasPermission("ADMINISTRATOR", false, true)) {
                 return;
             }
- 
+
             // TODO: Set up channels and stuff.
             await createDiscordChannels(this.client, message.guild);
         } else if (message.content.startsWith("!subscribe ")) {
@@ -63,6 +59,10 @@ export default class DiscordBot {
                 await member.addRole(role);
             }
         }
+
+        if (channel.name === "roles" && message.author.id !== this.client.user.id) {
+            await message.delete();
+        }
     }
 
     /**
@@ -77,8 +77,8 @@ export default class DiscordBot {
         const role = getRoleByName(category, guild)!;
 
         const channel = guild.channels
-        .find(c => c.name === category.toLowerCase()) as TextChannel;
-        
+            .find(c => c.name === category.toLowerCase()) as TextChannel;
+
         // Don't bother sending the message if the server doesn't have that category.
         if (!role) {
             return;
