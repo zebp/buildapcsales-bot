@@ -14,11 +14,7 @@ async function main() {
     await client.login(DISCORD_TOKEN);
 
     while (true) {
-        let submissions;
-
-        try { // Reddit sometimes goes down for 5 or so minutes, so we need to error handle here.
-            submissions = await getLatestSubmissions("buildapcsales", visitedSubmissionSet); // TODO: Allow for a way to specify the subreddit.
-        } catch (_) {}
+        let submissions = await getLatestSubmissions("buildapcsales", visitedSubmissionSet).catch(console.error); // TODO: Allow for a way to specify the subreddit.
 
         if (!submissions) {
             continue;
