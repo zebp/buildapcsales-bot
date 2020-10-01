@@ -1,6 +1,6 @@
 import { Submission } from "./reddit";
 
-// TODO: Refactor this giant hacky mess into something that isn't terrible.
+// Regexes used to detect the price in the title of a submission.
 const REGEXES = [
     /\$((?:\d|\,)*\.?\d+)/m,
     /\s\$(\d+\.\d{2}?)\s/m,
