@@ -9,12 +9,12 @@ async function main() {
     const client = new Client();
     const bot = new DiscordBot(client);
 
-    let visitedSubmissionSet = new Set<string>();
+    const visitedSubmissionSet = new Set<string>();
 
     await client.login(DISCORD_TOKEN);
 
     while (true) {
-        let submissions = await getLatestSubmissions("buildapcsales", visitedSubmissionSet).catch(console.error); // TODO: Allow for a way to specify the subreddit.
+        const submissions = await getLatestSubmissions("buildapcsales", visitedSubmissionSet).catch(console.error); // TODO: Allow for a way to specify the subreddit.
 
         if (!submissions) {
             continue;
